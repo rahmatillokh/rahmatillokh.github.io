@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 396" role="img" aria-labelledby="tms-title">
+  <title id="tms-title">typing_me interfeysi: matn terish tezligi testi — 30 soniyalik rejim, so'zlar va WPM ko'rsatkichi</title>
+  <defs>
+    <style>
+      .mono { font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
+    </style>
+  </defs>
+  <rect width="1300" height="396" fill="#0f1012"/>
+
+  <!-- config bar -->
+  <rect x="360" y="34" width="580" height="46" rx="12" fill="#191a1f"/>
+  <g class="mono" font-size="17" fill="#55565f">
+    <text x="404" y="63">@ punctuation</text>
+    <text x="548" y="63"># numbers</text>
+    <text x="690" y="63" fill="#f2c14e">time</text>
+    <text x="762" y="63">words</text>
+    <text x="846" y="63">quote</text>
+  </g>
+  <g class="mono" font-size="17">
+    <text x="905" y="63" fill="#f2c14e" font-weight="700">30</text>
+  </g>
+
+  <!-- timer -->
+  <text x="120" y="150" class="mono" font-size="52" fill="#f2c14e" font-weight="600">30</text>
+
+  <!-- words -->
+  <g class="mono" font-size="34">
+    <text x="120" y="222">
+      <tspan fill="#e8e8ec">the</tspan><tspan fill="#55565f"> quick brown fox </tspan><tspan fill="#f2c14e">|</tspan><tspan fill="#55565f">jumps over the lazy</tspan>
+    </text>
+    <text x="120" y="278" fill="#55565f">word count and accuracy update as you type every</text>
+    <text x="120" y="334" fill="#55565f">keystroke measured for a precise words per minute</text>
+  </g>
+
+  <!-- restart glyph -->
+  <g transform="translate(636 366)" fill="none" stroke="#55565f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-9 0a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L-9 -4"/>
+    <path d="M-9 -9v5h5"/>
+  </g>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="tm-title tm-desc">
+  <title id="tm-title">typing_me logo</title>
+  <desc id="tm-desc">A keyboard key containing a stylized T and underscore.</desc>
+  <rect width="512" height="512" rx="112" fill="#0f1012"/>
+  <rect x="58" y="72" width="396" height="368" rx="72" fill="#191a1f" stroke="#f2c14e" stroke-width="18"/>
+  <g fill="#55565f">
+    <rect x="105" y="124" width="54" height="30" rx="10"/>
+    <rect x="174" y="124" width="54" height="30" rx="10"/>
+    <rect x="243" y="124" width="54" height="30" rx="10"/>
+    <rect x="312" y="124" width="54" height="30" rx="10"/>
+    <rect x="381" y="124" width="26" height="30" rx="10"/>
+    <rect x="105" y="172" width="40" height="28" rx="9"/>
+    <rect x="160" y="172" width="40" height="28" rx="9"/>
+    <rect x="215" y="172" width="40" height="28" rx="9"/>
+    <rect x="270" y="172" width="40" height="28" rx="9"/>
+    <rect x="325" y="172" width="82" height="28" rx="9"/>
+  </g>
+  <path d="M142 238h218v42h-86v112h-46V280h-86z" fill="#e8e8ec"/>
+  <rect x="303" y="352" width="105" height="40" rx="12" fill="#f2c14e"/>
+</svg>

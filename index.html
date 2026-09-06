@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rahmatillokh Dev — web & game developer</title>
+  <meta name="description" content="Rahmatillokh Dev — founder of AYS Apps (Namangan, Uzbekistan). Apps people use every day: MarketPOS, Avtolingo, Edu360 — and Typing Me, a neon typing-action game you can play in the browser.">
+  <meta property="og:title" content="Rahmatillokh Dev">
+  <meta property="og:description" content="Web & game developer. Founder of AYS Apps. MarketPOS · Avtolingo · Edu360 · Typing Me.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rahmatillokh.github.io/">
+  <meta property="og:image" content="https://rahmatillokh.github.io/assets/img/typing-me-game.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='4' width='56' height='56' rx='12' fill='%230b0f18' stroke='%23f2b437' stroke-width='3'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='Menlo,monospace' font-size='30' font-weight='700' fill='%23f2b437'%3ER%3C/text%3E%3C/svg%3E">
+
+  <style>
+    @font-face { font-family: "Orbitron"; src: url("assets/fonts/Orbitron-Variable.ttf") format("truetype"); font-weight: 400 900; font-display: swap; }
+    @font-face { font-family: "Rajdhani"; src: url("assets/fonts/Rajdhani-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+    @font-face { font-family: "Share Tech Mono"; src: url("assets/fonts/ShareTechMono-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+
+    :root {
+      --ink: #05070c;
+      --plate: #0b0f18;
+      --plate-2: #111726;
+      --rim: #1c2536;
+      --text: #e8faff;
+      --muted: #7a8ca6;
+      --gold: #f2b437;
+      --gold-soft: rgba(242, 180, 55, 0.14);
+      --spring: #3bff9e;
+      --display: "Orbitron", system-ui, sans-serif;
+      --body: "Rajdhani", system-ui, sans-serif;
+      --mono: "Share Tech Mono", Menlo, monospace;
+      --col: 1080px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--ink);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 19px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* The game's grid, at a whisper, and the icon's warm floor glow. */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 70% 45% at 50% 110%, rgba(242, 180, 55, 0.13), transparent 70%),
+        repeating-linear-gradient(0deg, rgba(122, 140, 166, 0.07) 0 1px, transparent 1px 64px),
+        repeating-linear-gradient(90deg, rgba(122, 140, 166, 0.07) 0 1px, transparent 1px 64px),
+        linear-gradient(#0b0f18, #05070c 60%);
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+    .wrap { width: min(var(--col), calc(100% - 48px)); margin: 0 auto; }
+
+    /* ---------- header ---------- */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 0;
+    }
+
+    .monogram {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--rim);
+      border-bottom-width: 3px;
+      border-radius: 9px;
+      background: var(--plate);
+      font-family: var(--mono);
+      font-size: 18px;
+      color: var(--gold);
+    }
+
+    nav { display: flex; gap: 26px; }
+    nav a { font-family: var(--mono); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    nav a:hover { color: var(--text); text-decoration: none; }
+
+    /* ---------- hero ---------- */
+    .hero { padding: 64px 0 72px; }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 14px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 22px;
+    }
+    .eyebrow .dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--spring);
+      box-shadow: 0 0 10px var(--spring);
+      margin-right: 10px;
+      vertical-align: 1px;
+    }
+
+    /* The name as a row of keys. Each lights when "pressed" on load, then on hover. */
+    .keys {
+      display: flex;
+      flex-wrap: wrap;
+      gap: clamp(5px, 0.9vw, 10px);
+      margin: 0 0 30px;
+      padding: 0;
+      font-family: var(--display);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .key {
+      --size: clamp(38px, 6.6vw, 76px);
+      display: grid;
+      place-items: center;
+      width: var(--size);
+      height: var(--size);
+      border: 1px solid var(--rim);
+      border-bottom-width: 4px;
+      border-radius: calc(var(--size) * 0.18);
+      background: linear-gradient(var(--plate-2), var(--plate));
+      color: var(--muted);
+      font-size: calc(var(--size) * 0.5);
+      transition: color 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.12s;
+      animation: press 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+      animation-delay: calc(var(--i) * 85ms + 250ms);
+    }
+    .key.lit, .key:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+      box-shadow: 0 0 22px rgba(242, 180, 55, 0.35), inset 0 -3px 0 rgba(242, 180, 55, 0.25);
+    }
+    .key:hover { transform: translateY(3px); border-bottom-width: 1px; }
+
+    @keyframes press {
+      0%   { color: var(--muted); transform: translateY(0); }
+      35%  { color: var(--gold); border-color: var(--gold); transform: translateY(3px); border-bottom-width: 1px;
+             box-shadow: 0 0 26px rgba(242, 180, 55, 0.45); }
+      100% { color: var(--gold); border-color: var(--gold); transform: translateY(0);
+             box-shadow: 0 0 22px rgba(242, 180, 55, 0.35), inset 0 -3px 0 rgba(242, 180, 55, 0.25); }
+    }
+
+    .lede {
+      max-width: 640px;
+      font-size: clamp(22px, 2.6vw, 28px);
+      line-height: 1.35;
+      margin: 0 0 14px;
+    }
+    .lede strong { color: var(--gold); font-weight: 600; }
+
+    .typed {
+      font-family: var(--mono);
+      font-size: 16px;
+      color: var(--muted);
+      margin: 0 0 36px;
+      min-height: 1.6em;
+    }
+    .typed::after {
+      content: "▍";
+      color: var(--gold);
+      animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 22px;
+      border: 1px solid var(--rim);
+      border-bottom-width: 3px;
+      border-radius: 10px;
+      background: var(--plate);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 0.12s, border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .btn:hover { text-decoration: none; border-color: var(--gold); box-shadow: 0 0 18px var(--gold-soft); }
+    .btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+    .btn.primary { background: var(--gold); border-color: #c98f1f; color: #1a1205; }
+    .btn.primary:hover { box-shadow: 0 0 26px rgba(242, 180, 55, 0.45); }
+
+    /* ---------- sections ---------- */
+    section { padding: 56px 0; }
+
+    .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 30px; }
+    .section-head h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(22px, 2.4vw, 28px);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .section-head .eyebrow { margin: 0; }
+
+    /* ---------- projects: keycap cards ---------- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--rim);
+      border-bottom-width: 4px;
+      border-radius: 16px;
+      background: linear-gradient(var(--plate-2), var(--plate));
+      overflow: hidden;
+      transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 0 28px var(--gold-soft); }
+    .card.featured { grid-column: 1 / -1; }
+
+    .shot {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      object-fit: cover;
+      object-position: top;
+      background: var(--ink);
+      border-bottom: 1px solid var(--rim);
+    }
+    .featured .shot { aspect-ratio: 21 / 9; }
+    .shot.phone { object-fit: cover; object-position: center 12%; }
+    .shot.contain { object-fit: contain; padding: 18px; }
+
+    .card-body { display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 24px; flex: 1; }
+
+    .card-title { display: flex; align-items: center; gap: 14px; }
+    .card-title img { width: 44px; height: 44px; border-radius: 11px; }
+    .card-title h3 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: 0.04em; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .tags li {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 3px 9px;
+      border: 1px solid var(--rim);
+      border-radius: 6px;
+    }
+    .tags li.live { color: var(--spring); border-color: rgba(59, 255, 158, 0.35); }
+
+    .card p { margin: 0; color: #c6d3e2; }
+
+    .links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: auto; padding-top: 6px; font-family: var(--mono); font-size: 14px; letter-spacing: 0.06em; }
+    .links a::after { content: " ↗"; color: var(--muted); }
+
+    /* ---------- about ---------- */
+    .about { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; }
+    .about p { margin: 0 0 16px; max-width: 60ch; }
+    .facts { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+    .facts li { display: grid; grid-template-columns: 120px 1fr; gap: 12px; font-size: 17px; }
+    .facts dt, .facts .k { font-family: var(--mono); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+
+    /* ---------- contact ---------- */
+    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .contact {
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 18px 20px;
+      border: 1px solid var(--rim); border-bottom-width: 3px; border-radius: 12px;
+      background: var(--plate);
+      color: var(--text);
+      transition: border-color 0.2s, transform 0.12s;
+    }
+    .contact:hover { border-color: var(--gold); text-decoration: none; }
+    .contact:active { transform: translateY(2px); border-bottom-width: 1px; }
+    .contact .k { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .contact .v { font-size: 18px; }
+
+    footer { padding: 40px 0 48px; font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    @media (max-width: 800px) {
+      body { font-size: 18px; }
+      nav { gap: 18px; }
+      .hero { padding: 40px 0 56px; }
+      .grid { grid-template-columns: 1fr; }
+      .featured .shot { aspect-ratio: 16 / 9; }
+      .about { grid-template-columns: 1fr; }
+      .facts li { grid-template-columns: 100px 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .key { animation: none; color: var(--gold); border-color: var(--gold); }
+      .typed::after { animation: none; }
+      .card, .btn, .contact, .key { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="monogram" href="#top" aria-label="Rahmatillokh Dev — top">R</a>
+      <nav aria-label="Sections">
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <section class="hero" id="top">
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Namangan, Uzbekistan · Founder of AYS Apps</p>
+
+      <h1 class="visually-hidden">Rahmatillokh Dev</h1>
+      <div class="keys" aria-hidden="true">
+        <span class="key" style="--i:0">R</span><span class="key" style="--i:1">A</span><span class="key" style="--i:2">H</span><span class="key" style="--i:3">M</span><span class="key" style="--i:4">A</span><span class="key" style="--i:5">T</span><span class="key" style="--i:6">I</span><span class="key" style="--i:7">L</span><span class="key" style="--i:8">L</span><span class="key" style="--i:9">O</span><span class="key" style="--i:10">K</span><span class="key" style="--i:11">H</span>
+      </div>
+
+      <p class="lede">Web &amp; game developer. I build apps people in Uzbekistan use every day — and <strong>a game where the keyboard is the weapon.</strong></p>
+      <p class="typed" id="typed" aria-hidden="true"></p>
+
+      <div class="actions">
+        <a class="btn primary" href="https://rahmatillokh.github.io/typing-me/">▶ Play Typing Me</a>
+        <a class="btn" href="#projects">See projects</a>
+        <a class="btn" href="#contact">Contact</a>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-head">
+        <h2>Projects</h2>
+        <p class="eyebrow">Shipped and live</p>
+      </div>
+
+      <div class="grid">
+        <article class="card featured">
+          <img class="shot" src="assets/img/typing-me-game.jpg" alt="Typing Me gameplay: words falling from a pixel-art golem toward a neon keyboard" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">
+              <img src="assets/img/typing-me-game-icon.png" alt="">
+              <h3>Typing Me</h3>
+            </div>
+            <ul class="tags">
+              <li class="live">Play in browser</li><li>Game</li><li>Windows</li><li>macOS</li><li>Open source</li>
+            </ul>
+            <p>A neon typing-action game. Words rain from pixel-art bosses and every word you type is a hit — 80 levels across four seasons, five hand-drawn bosses, a keyboard that re-routes to the word you meant. Built in Unity, fully offline, with a procedural synthwave soundtrack.</p>
+            <div class="links">
+              <a href="https://rahmatillokh.github.io/typing-me/">Play now</a>
+              <a href="https://github.com/rahmatillokh/typing-me/releases/latest">Download for desktop</a>
+              <a href="https://github.com/rahmatillokh/typing-me">Source on GitHub</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <img class="shot" src="assets/img/marketpos-dashboard.jpg" alt="MarketPOS dashboard" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">
+              <img src="assets/img/marketpos-icon.png" alt="">
+              <h3>MarketPOS</h3>
+            </div>
+            <ul class="tags"><li>SaaS</li><li>Point of sale</li></ul>
+            <p>Point-of-sale for shops and sales points: multi-warehouse inventory, sales, staff and customer debt, real-time reports, an offline mode, and Telegram notifications.</p>
+            <div class="links"><a href="https://marketpos.uz">marketpos.uz</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <img class="shot phone" src="assets/img/avtolingo-test.jpg" alt="Avtolingo exam screen" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">
+              <img src="assets/img/avtolingo-icon.png" alt="">
+              <h3>Avtolingo</h3>
+            </div>
+            <ul class="tags"><li>Mobile app</li><li>Free</li></ul>
+            <p>Driver's licence exam prep that plays like a game: the real YHQ (PDD) questions, lives, gems, and weekly and monthly leaderboards.</p>
+            <div class="links"><a href="https://avtolingo.uz">avtolingo.uz</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <img class="shot phone" src="assets/img/edu360-testlar.jpg" alt="Edu360 tests screen" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">
+              <img src="assets/img/edu360-icon.png" alt="">
+              <h3>Edu360</h3>
+            </div>
+            <ul class="tags"><li>Education</li><li>Free for students</li></ul>
+            <p>Online testing across every school subject, with an IELTS section, a vertical feed, and teacher profiles where teachers publish their own tests.</p>
+            <div class="links"><a href="https://edu360.uz">edu360.uz</a></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <img class="shot contain" src="assets/img/typing-me-shot.svg" alt="Typing Me speed test" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">
+              <img src="assets/img/typing-me-icon.svg" alt="">
+              <h3>Typing Me — speed test</h3>
+            </div>
+            <ul class="tags"><li>Web</li><li>No sign-up</li></ul>
+            <p>Free typing test for WPM, accuracy and consistency. Five modes, six themes, no registration, no ads — the tool the game grew out of.</p>
+            <div class="links"><a href="https://typing-me.aysapps.uz">typing-me.aysapps.uz</a></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="section-head">
+        <h2>About</h2>
+        <p class="eyebrow">AYS Apps</p>
+      </div>
+      <div class="about">
+        <div>
+          <p>I'm Rahmatillokh, founder of <a href="https://aysapps.uz">AYS Apps</a> — a small studio in Namangan that builds Android and iOS apps, web panels and SaaS platforms, from the first concept through app-store release.</p>
+          <p>Most of my work is software people rely on daily: a point-of-sale system for shops, an exam-prep app for new drivers, a testing platform for students. Between those, I make games — because a keyboard is more fun when something is fighting back.</p>
+        </div>
+        <ul class="facts">
+          <li><span class="k">Based in</span><span>Namangan, Uzbekistan</span></li>
+          <li><span class="k">Builds</span><span>Mobile apps, web panels, SaaS, games</span></li>
+          <li><span class="k">Stack</span><span>Unity &amp; C#, web front and back ends, Android &amp; iOS</span></li>
+          <li><span class="k">Studio</span><span><a href="https://aysapps.uz">aysapps.uz</a></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-head">
+        <h2>Contact</h2>
+        <p class="eyebrow">Usually replies within a business day</p>
+      </div>
+      <div class="contact-grid">
+        <a class="contact" href="https://t.me/rahmatillokh_web"><span class="k">Telegram</span><span class="v">@rahmatillokh_web</span></a>
+        <a class="contact" href="mailto:webcoder292@gmail.com"><span class="k">Email</span><span class="v">webcoder292@gmail.com</span></a>
+        <a class="contact" href="https://www.youtube.com/@rahmatillokh"><span class="k">YouTube</span><span class="v">@rahmatillokh</span></a>
+        <a class="contact" href="https://github.com/rahmatillokh"><span class="k">GitHub</span><span class="v">rahmatillokh</span></a>
+        <a class="contact" href="https://www.instagram.com/rahmatillo.dev"><span class="k">Instagram</span><span class="v">rahmatillo.dev</span></a>
+        <a class="contact" href="https://tirikchilik.uz/rahmatillokh"><span class="k">Support the work</span><span class="v">tirikchilik.uz</span></a>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Rahmatillokh Dev</span>
+      <span>Hand-built, hosted on GitHub Pages · <a href="https://github.com/rahmatillokh/rahmatillokh.github.io">source</a></span>
+    </footer>
+  </div>
+
+  <script>
+    // Types the working line under the name once the keys have finished lighting up.
+    (function () {
+      var el = document.getElementById("typed");
+      var text = "founder @ aysapps.uz  ·  unity · c# · web · android · ios";
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reduce) { el.textContent = text; return; }
+
+      var keys = document.querySelectorAll(".key");
+      var start = 250 + keys.length * 85 + 350;
+      var i = 0;
+
+      setTimeout(function tick() {
+        el.textContent = text.slice(0, ++i);
+        if (i < text.length) setTimeout(tick, text[i - 1] === " " ? 90 : 38);
+      }, start);
+    })();
+  </script>
+</body>
+</html>
