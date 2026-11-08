@@ -1,0 +1,13 @@
+{
+  "name": "rahmatillokh-github-io",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "typeface": "node tools/make-typeface.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "three": "0.169.0"
+  }
+}

@@ -2,486 +2,746 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rahmatillokh Dev — web & game developer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rahmatillokh Dev — web & game developer · a film in six scenes</title>
   <meta name="description" content="Rahmatillokh Dev — founder of AYS Apps (Namangan, Uzbekistan). Apps people use every day: MarketPOS, Avtolingo, Edu360 — and Typing Me, a neon typing-action game you can play in the browser.">
-  <meta property="og:title" content="Rahmatillokh Dev">
+  <meta property="og:title" content="Rahmatillokh — a film in six scenes">
   <meta property="og:description" content="Web & game developer. Founder of AYS Apps. MarketPOS · Avtolingo · Edu360 · Typing Me.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://rahmatillokh.github.io/">
   <meta property="og:image" content="https://rahmatillokh.github.io/assets/img/cards/typing-me.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='4' width='56' height='56' rx='12' fill='%230b0f18' stroke='%23f2b437' stroke-width='3'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='Menlo,monospace' font-size='30' font-weight='700' fill='%23f2b437'%3ER%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#050505">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='4' width='56' height='56' rx='12' fill='%23ef2b3a'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Impact,Arial Narrow,sans-serif' font-size='34' fill='%23fff'%3ER%3C/text%3E%3C/svg%3E">
+  <link rel="preload" href="assets/fonts/Anton-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/PlusJakartaSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/anton.typeface.json" as="fetch" crossorigin>
+
+  <script>
+    /* How the page plays:
+       cine    — the film: it plays itself, the page never scrolls, the viewer only watches (and may pause).
+       preshow — the cinema before the lights go down.
+       still   — reduced motion, no WebGL, or no JavaScript: a calm, readable page. */
+    (function () {
+      var c = document.documentElement.classList;
+      c.add("js");
+      var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var gl = false;
+      try { gl = !!document.createElement("canvas").getContext("webgl2"); } catch (e) {}
+      if (calm || !gl || !("IntersectionObserver" in window)) { c.add("still"); return; }
+      c.add("cine", "preshow");
+      setTimeout(function () { if (!c.contains("ready")) { c.remove("cine", "preshow"); c.add("still"); } }, 15000);
+    })();
+  </script>
 
   <style>
-    @font-face { font-family: "Orbitron"; src: url("assets/fonts/Orbitron-Variable.ttf") format("truetype"); font-weight: 400 900; font-display: swap; }
-    @font-face { font-family: "Rajdhani"; src: url("assets/fonts/Rajdhani-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
-    @font-face { font-family: "Share Tech Mono"; src: url("assets/fonts/ShareTechMono-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+    @font-face { font-family: "Anton"; src: url("assets/fonts/Anton-Regular.woff2") format("woff2"); font-display: swap; }
+    @font-face { font-family: "Jakarta"; src: url("assets/fonts/PlusJakartaSans-Variable.woff2") format("woff2"); font-weight: 200 800; font-display: swap; }
+    @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-Variable.woff2") format("woff2"); font-weight: 100 800; font-display: swap; }
+    @font-face { font-family: "Kaushan"; src: url("assets/fonts/KaushanScript-Regular.woff2") format("woff2"); font-display: swap; }
+    @font-face { font-family: "Courier Prime"; src: url("assets/fonts/CourierPrime-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+    @font-face { font-family: "Courier Prime"; src: url("assets/fonts/CourierPrime-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
     :root {
-      --ink: #05070c;
-      --plate: #0b0f18;
-      --plate-2: #111726;
-      --rim: #1c2536;
-      --text: #e8faff;
-      --muted: #7a8ca6;
-      --gold: #f2b437;
-      --gold-soft: rgba(242, 180, 55, 0.14);
-      --spring: #3bff9e;
-      --display: "Orbitron", system-ui, sans-serif;
-      --body: "Rajdhani", system-ui, sans-serif;
-      --mono: "Share Tech Mono", Menlo, monospace;
-      --col: 1080px;
+      --ink: #050505;
+      --text: #f3efe8;
+      --soft: #c9c3b9;
+      --muted: #8b857c;
+      --red: #ef2b3a;
+      --red-2: #ff4655;
+      --amber: #ffcf8a;
+      --green: #3bff9e;
+      --paper: #f3efe4;
+      --display: "Anton", Impact, "Arial Narrow", sans-serif;
+      --sans: "Jakarta", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --script: "Kaushan", "Brush Script MT", cursive;
+      --type: "Courier Prime", "Courier New", Courier, monospace;
+      --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     * { box-sizing: border-box; }
+    html { background: var(--ink); color: var(--text); scroll-behavior: smooth; overflow-x: clip; }
+    body { margin: 0; font-family: var(--sans); font-size: 16.5px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; color: inherit; }
+    ::selection { background: var(--red); color: #fff; }
+    :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 3px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    .skip-link { position: fixed; z-index: 120; left: 16px; top: -60px; padding: 10px 14px; background: #fff; color: #000; font: 600 13px var(--sans); border-radius: 6px; }
+    .skip-link:focus { top: 16px; }
 
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      background: var(--ink);
-      color: var(--text);
-      font-family: var(--body);
-      font-size: 19px;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* The game's grid, at a whisper, and the icon's warm floor glow. */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background:
-        radial-gradient(ellipse 70% 45% at 50% 110%, rgba(242, 180, 55, 0.13), transparent 70%),
-        repeating-linear-gradient(0deg, rgba(122, 140, 166, 0.07) 0 1px, transparent 1px 64px),
-        repeating-linear-gradient(90deg, rgba(122, 140, 166, 0.07) 0 1px, transparent 1px 64px),
-        linear-gradient(#0b0f18, #05070c 60%);
-    }
-
-    a { color: var(--gold); text-decoration: none; }
-    a:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-    :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
-
-    .wrap { width: min(var(--col), calc(100% - 48px)); margin: 0 auto; }
-
-    /* ---------- header ---------- */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 22px 0;
-    }
-
-    .monogram {
-      display: inline-grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--rim);
-      border-bottom-width: 3px;
-      border-radius: 9px;
-      background: var(--plate);
-      font-family: var(--mono);
-      font-size: 18px;
-      color: var(--gold);
-    }
-
-    nav { display: flex; gap: 26px; }
-    nav a { font-family: var(--mono); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-    nav a:hover { color: var(--text); text-decoration: none; }
-
-    /* ---------- hero ---------- */
-    .hero { padding: 64px 0 72px; }
-
-    .eyebrow {
-      font-family: var(--mono);
-      font-size: 14px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin: 0 0 22px;
-    }
-    .eyebrow .dot {
-      display: inline-block;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--spring);
-      box-shadow: 0 0 10px var(--spring);
-      margin-right: 10px;
-      vertical-align: 1px;
-    }
-
-    /* The name as a row of keys. Each lights when "pressed" on load, then on hover. */
-    .keys {
-      display: flex;
-      flex-wrap: wrap;
-      gap: clamp(5px, 0.9vw, 10px);
-      margin: 0 0 30px;
-      padding: 0;
-      font-family: var(--display);
-      font-weight: 700;
-      line-height: 1;
-    }
-    .key {
-      --size: clamp(38px, 6.6vw, 76px);
-      display: grid;
-      place-items: center;
-      width: var(--size);
-      height: var(--size);
-      border: 1px solid var(--rim);
-      border-bottom-width: 4px;
-      border-radius: calc(var(--size) * 0.18);
-      background: linear-gradient(var(--plate-2), var(--plate));
-      color: var(--muted);
-      font-size: calc(var(--size) * 0.5);
-      transition: color 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.12s;
-      animation: press 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) both;
-      animation-delay: calc(var(--i) * 85ms + 250ms);
-    }
-    .key.lit, .key:hover {
-      color: var(--gold);
-      border-color: var(--gold);
-      box-shadow: 0 0 22px rgba(242, 180, 55, 0.35), inset 0 -3px 0 rgba(242, 180, 55, 0.25);
-    }
-    .key:hover { transform: translateY(3px); border-bottom-width: 1px; }
-
-    @keyframes press {
-      0%   { color: var(--muted); transform: translateY(0); }
-      35%  { color: var(--gold); border-color: var(--gold); transform: translateY(3px); border-bottom-width: 1px;
-             box-shadow: 0 0 26px rgba(242, 180, 55, 0.45); }
-      100% { color: var(--gold); border-color: var(--gold); transform: translateY(0);
-             box-shadow: 0 0 22px rgba(242, 180, 55, 0.35), inset 0 -3px 0 rgba(242, 180, 55, 0.25); }
-    }
-
-    .lede {
-      max-width: 640px;
-      font-size: clamp(22px, 2.6vw, 28px);
-      line-height: 1.35;
-      margin: 0 0 14px;
-    }
-    .lede strong { color: var(--gold); font-weight: 600; }
-
-    .typed {
-      font-family: var(--mono);
-      font-size: 16px;
-      color: var(--muted);
-      margin: 0 0 36px;
-      min-height: 1.6em;
-    }
-    .typed::after {
-      content: "▍";
-      color: var(--gold);
-      animation: blink 1s steps(1) infinite;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    .actions { display: flex; flex-wrap: wrap; gap: 14px; }
-
+    .kick { margin: 0 0 14px; font: 700 10.5px/1.2 var(--mono); letter-spacing: 0.26em; text-transform: uppercase; color: var(--red-2); }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 13px 22px;
-      border: 1px solid var(--rim);
-      border-bottom-width: 3px;
-      border-radius: 10px;
-      background: var(--plate);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 15px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: transform 0.12s, border-color 0.18s, box-shadow 0.18s, background 0.18s;
+      display: inline-flex; align-items: center; gap: 9px; padding: 12px 16px; border-radius: 6px; cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.04); color: #fff;
+      font: 700 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
     }
-    .btn:hover { text-decoration: none; border-color: var(--gold); box-shadow: 0 0 18px var(--gold-soft); }
-    .btn:active { transform: translateY(2px); border-bottom-width: 1px; }
-    .btn.primary { background: var(--gold); border-color: #c98f1f; color: #1a1205; }
-    .btn.primary:hover { box-shadow: 0 0 26px rgba(242, 180, 55, 0.45); }
+    .btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.45); transform: translateY(-1px); }
+    .btn-red { background: var(--red); border-color: var(--red); box-shadow: 0 12px 30px -10px rgba(239, 43, 58, 0.75); }
+    .btn-red:hover { background: var(--red-2); border-color: var(--red-2); }
 
-    /* ---------- sections ---------- */
-    section { padding: 56px 0; }
-
-    .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 30px; }
-    .section-head h2 {
-      margin: 0;
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: clamp(22px, 2.4vw, 28px);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    /* ================= projection: grain, dust, vignette, flicker, reel-change cue ================= */
+    .fx-grain { position: fixed; inset: -12%; z-index: 80; pointer-events: none; opacity: 0.06; animation: grain 0.8s steps(5) infinite; }
+    @keyframes grain {
+      0% { transform: translate(0, 0); } 20% { transform: translate(-6%, 4%); } 40% { transform: translate(5%, -7%); }
+      60% { transform: translate(-3%, 7%); } 80% { transform: translate(8%, 2%); } 100% { transform: translate(-2%, -5%); }
     }
-    .section-head .eyebrow { margin: 0; }
+    .fx-dust { position: fixed; inset: 0; z-index: 80; width: 100%; height: 100%; pointer-events: none; opacity: 0.55; }
+    .fx-vig { position: fixed; inset: 0; z-index: 80; pointer-events: none; background: radial-gradient(130% 95% at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.5)); }
+    .fx-flicker { position: fixed; inset: 0; z-index: 80; pointer-events: none; background: #fff; opacity: 0; animation: flicker 7s steps(1) infinite; }
+    @keyframes flicker { 0% { opacity: 0; } 23% { opacity: 0.012; } 24% { opacity: 0; } 61% { opacity: 0.009; } 62% { opacity: 0; } 88% { opacity: 0.014; } 89% { opacity: 0; } }
+    .cue { position: fixed; z-index: 81; top: 9%; right: 7%; width: 30px; height: 30px; border-radius: 50%; pointer-events: none; opacity: 0;
+      background: radial-gradient(circle, rgba(255, 250, 240, 0.95) 0 34%, rgba(255, 220, 170, 0.55) 50%, rgba(30, 14, 6, 0.75) 64%, transparent 72%); }
+    .cue.on { opacity: 0.85; }
+    html:not(.cine) .fx-dust, html:not(.cine) .cue, #gl { display: none; }
 
-    /* ---------- projects: keycap cards ---------- */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+    /* ================= chrome: top bar ================= */
+    .top { position: fixed; z-index: 60; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px clamp(14px, 3vw, 28px); pointer-events: none; transition: opacity 0.6s, transform 0.6s var(--ease); }
+    .top a { pointer-events: auto; }
+    .mark { display: flex; align-items: center; gap: 10px; font: 700 10.5px/1 var(--mono); letter-spacing: 0.26em; text-transform: uppercase; text-shadow: 0 1px 8px #000; }
+    .mark b { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 5px; background: var(--red); color: #fff; font: 400 16px/1 var(--display); letter-spacing: 0; }
+    .top-nav { display: flex; gap: 4px; margin-left: auto; }
+    .top-nav a { padding: 8px 10px; border-radius: 6px; font: 600 10.5px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--soft); }
+    .top-nav a:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+    .top-cta { padding: 9px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.24); background: rgba(0, 0, 0, 0.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font: 700 10.5px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; transition: background 0.2s, color 0.2s; }
+    .top-cta:hover { background: #fff; color: #000; }
+    .cine .top-nav { display: none; }
+
+    /* ================= the pre-show ================= */
+    .gate, .leader, .player, .bigicon { display: none; }
+    html.preshow .gate {
+      display: grid; place-items: center; position: fixed; inset: 0; z-index: 100; overflow: hidden;
+      background: radial-gradient(60% 50% at 50% 60%, #120c0a, #030303 70%); transition: opacity 0.8s ease, visibility 0.8s;
+    }
+    html.rolling .gate { opacity: 0; visibility: hidden; }
+    .gate-dust { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .gate-beam {
+      position: absolute; left: 50%; top: -6%; width: 220vmax; height: 120vh; transform: translateX(-50%); pointer-events: none;
+      background: conic-gradient(from 166deg at 50% 0, transparent 0deg, rgba(255, 226, 186, 0.1) 9deg, rgba(255, 236, 206, 0.2) 14deg, rgba(255, 226, 186, 0.1) 19deg, transparent 28deg);
+      filter: blur(10px); animation: beam 3.2s ease-in-out infinite alternate;
+    }
+    @keyframes beam { from { opacity: 0.75; } to { opacity: 1; } }
+    .gate-top { position: absolute; top: 24px; left: 28px; right: 28px; display: flex; justify-content: space-between; font: 600 10.5px/1 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); }
+    .gate-mid { position: relative; display: grid; justify-items: center; text-align: center; padding: 0 20px; }
+    .gate-k { margin: 0; font: 600 11px/1 var(--mono); letter-spacing: 0.5em; text-transform: uppercase; color: var(--amber); }
+    .gate-t { margin: 14px 0 34px; font: 400 clamp(40px, 7vw, 92px)/0.9 var(--display); letter-spacing: 0.02em; text-transform: uppercase; color: #f3efe8; text-shadow: 0 0 40px rgba(255, 210, 160, 0.25); }
+    .load { display: flex; align-items: center; gap: 12px; margin: 0 0 30px; font: 600 10px/1 var(--mono); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); transition: opacity 0.5s; }
+    .load b { width: 140px; height: 1px; background: rgba(255, 255, 255, 0.16); }
+    .load i { display: block; height: 100%; background: var(--amber); box-shadow: 0 0 8px var(--amber); transform-origin: left; transform: scaleX(0); transition: transform 0.3s; }
+    .loaded .load { opacity: 0.35; }
+    .gate-play { display: grid; justify-items: center; gap: 16px; background: none; border: 0; padding: 0; cursor: pointer; color: #fff; transition: opacity 0.4s; }
+    .gate-play:disabled, .gate-muted:disabled, .gate-skip:disabled { opacity: 0.3; cursor: progress; }
+    .gate-play .ring { position: relative; width: 112px; height: 112px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.55); transition: transform 0.5s var(--ease), background 0.3s, color 0.3s; }
+    .gate-play:not(:disabled) .ring::before { content: ""; position: absolute; inset: -16px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.16); animation: pulse 2.4s ease-out infinite; }
+    @keyframes pulse { from { transform: scale(0.85); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }
+    .gate-play svg { width: 26px; margin-left: 6px; }
+    .gate-play:not(:disabled):hover .ring, .gate-play:focus-visible .ring { transform: scale(1.07); background: #fff; color: #000; }
+    .gate-play .lab { font: 700 11px/1 var(--mono); letter-spacing: 0.32em; text-transform: uppercase; }
+    .gate-muted { margin-top: 18px; padding: 6px; background: none; border: 0; cursor: pointer; color: var(--muted); font: 600 10.5px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 4px; }
+    .gate-muted:not(:disabled):hover { color: #fff; }
+    .gate-note { position: absolute; left: 0; right: 0; bottom: 30px; margin: 0; padding: 0 24px; text-align: center; font: 500 10.5px/1.6 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.38); }
+    .gate-ticket { position: absolute; left: 28px; bottom: 26px; margin: 0; padding: 7px 10px; border: 1px dashed rgba(255, 207, 138, 0.4); font: 600 9.5px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 207, 138, 0.7); transform: rotate(-2deg); }
+    .gate-skip { position: absolute; right: 24px; bottom: 22px; padding: 8px 10px; background: none; border: 0; cursor: pointer; color: rgba(255, 255, 255, 0.55); font: 600 10.5px/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; }
+    .gate-skip:not(:disabled):hover { color: #fff; }
+    html.leading .leader { display: block; position: fixed; inset: 0; z-index: 101; width: 100%; height: 100%; background: #000; }
+
+    /* ================= base layout — no JavaScript, reduced motion, or no WebGL ================= */
+    .sc { position: relative; }
+    .stage { position: relative; }
+    .lb, .slugline, .flash, .boss, .field, .prompt, .ar-stats, .win, .ar-scan, .ar-glow, .post-dragon, .mode, .banner, .callout, .chips { display: none; }
+
+    .sc-open .stage { padding: clamp(110px, 18vh, 170px) 20px 40px; text-align: center; }
+    .t-presents { margin: 0 0 18px; font: 600 11px/1 var(--mono); letter-spacing: 0.5em; text-transform: uppercase; color: var(--muted); }
+    .t-title { margin: 0; font: 400 clamp(52px, 14.6vw, 250px)/0.86 var(--display); letter-spacing: 0.006em; color: #f4efe6; white-space: nowrap; text-transform: uppercase; }
+    .t-tag { margin: 24px 0 0; font: 800 clamp(11px, 1.2vw, 15px)/1.3 var(--sans); letter-spacing: 0.42em; text-transform: uppercase; color: var(--red-2); }
+    .t-logline { margin: 12px 0 0; color: var(--soft); font-size: clamp(14px, 1.15vw, 17px); }
+    .t-billing { max-width: 820px; margin: 30px auto 0; font: 400 10.5px/1.3 var(--display); letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255, 255, 255, 0.38); transform: scaleY(1.6); transform-origin: top; }
+    .t-billing b { font-weight: 400; color: rgba(255, 255, 255, 0.62); }
+    .t-hint { display: none; }
+    .subs { max-width: 760px; margin: 70px auto 0; text-align: left; }
+    .sub { margin: 0 0 14px; font-size: 19px; color: var(--soft); }
+
+    .sc-game .stage, .sc-cast .stage, .sc-credits .stage { padding: clamp(90px, 14vh, 140px) 20px; }
+    .ar-head, .ar-facts, .cast-head, .cast-info { max-width: 1100px; margin-left: auto; margin-right: auto; }
+    .ar-title { margin: 0; font: 400 clamp(40px, 6.2vw, 96px)/0.92 var(--display); letter-spacing: 0.005em; text-transform: uppercase; color: #fff; }
+    .ar-title em { font-style: normal; color: var(--red-2); text-shadow: 0 0 34px rgba(239, 43, 58, 0.55); }
+    .ar-facts { margin-top: 30px; }
+    .ar-facts h3 { margin: 0 0 8px; font: 400 26px/1 var(--display); letter-spacing: 0.04em; text-transform: uppercase; }
+    .ar-facts p { margin: 0; color: var(--soft); font-size: 15px; }
+    .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 16px 0 0; padding: 0; list-style: none; font: 600 10.5px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .facts b { color: var(--red-2); font-size: 14px; margin-right: 4px; }
+    .ar-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+
+    .cast-head h2 { margin: 0; font: 400 clamp(36px, 4.6vw, 66px)/0.95 var(--display); letter-spacing: 0.01em; text-transform: uppercase; }
+    .cast-info { display: grid; gap: 30px; margin-top: 34px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .ci-img { aspect-ratio: 16 / 7; width: 100%; object-fit: cover; border-radius: 6px; margin-bottom: 14px; }
+    .ci-n { margin: 0 0 6px; font: 700 10.5px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--red-2); }
+    .ci h3 { margin: 0; font: 400 clamp(30px, 3.4vw, 46px)/1 var(--display); letter-spacing: 0.02em; text-transform: uppercase; }
+    .ci-t { margin: 0; font: 400 clamp(26px, 3vw, 40px)/1 var(--display); text-transform: uppercase; }
+    .ci-d { margin: 10px 0 0; color: var(--soft); font-size: 15.5px; max-width: 44em; }
+    .ci-a { display: inline-flex; margin-top: 12px; font: 700 11.5px/1 var(--mono); letter-spacing: 0.1em; color: #fff; border-bottom: 1px solid var(--red); padding-bottom: 4px; }
+    .ci-a:hover { color: var(--red-2); }
+    .roll { max-width: 900px; margin: 0 auto; text-align: center; }
+    .post { margin-top: 70px; text-align: center; }
+
+    /* ================= Scene 05 — the screenplay ================= */
+    .sc-script { padding: clamp(110px, 16vh, 160px) 14px clamp(130px, 18vh, 180px); background: radial-gradient(55% 45% at 28% 18%, rgba(255, 196, 120, 0.16), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgba(239, 43, 58, 0.08), transparent 70%), #0a0807; }
+    .desk-head { max-width: 760px; margin: 0 auto 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+    .desk-head h2 { margin: 0; font: 400 clamp(34px, 4.4vw, 60px)/0.95 var(--display); text-transform: uppercase; }
+    .desk-head p { margin: 0; max-width: 260px; color: var(--muted); font-size: 13.5px; text-align: right; }
+    .page {
+      position: relative; max-width: 720px; margin: 0 auto;
+      padding: clamp(46px, 7vw, 76px) clamp(20px, 7vw, 72px) clamp(40px, 6vw, 60px) clamp(26px, 10vw, 100px);
+      background: var(--paper); color: #161412; font: 400 clamp(13px, 1.32vw, 16px)/1.3 var(--type);
+      box-shadow: 0 50px 90px -30px rgba(0, 0, 0, 0.85), 0 2px 0 rgba(0, 0, 0, 0.25), inset 0 0 80px rgba(120, 90, 40, 0.08);
+      transform: rotate(-0.6deg);
+    }
+    .page::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--grain); opacity: 0.07; mix-blend-mode: multiply; }
+    .page::after { content: ""; position: absolute; left: 18px; top: 0; bottom: 0; width: 22px; pointer-events: none; background: radial-gradient(circle at 50% 8%, #0a0807 0 5px, transparent 6px), radial-gradient(circle at 50% 50%, #0a0807 0 5px, transparent 6px), radial-gradient(circle at 50% 92%, #0a0807 0 5px, transparent 6px); }
+    .page p { margin: 0 0 1.2em; }
+    .pg { position: absolute; right: clamp(20px, 6vw, 60px); top: clamp(20px, 3.4vw, 34px); margin: 0 !important; }
+    .tr { text-transform: uppercase; }
+    .tr-r { text-align: right; }
+    .sl { font-weight: 700; text-transform: uppercase; }
+    .cue-l { display: block; margin: 0 0 0.1em 37% !important; text-transform: uppercase; }
+    .paren { margin: 0 0 0.2em 28% !important; }
+    .dlg { margin: 0 14% 1.2em 18% !important; }
+    .who { width: min(16em, 90%); padding: 2px 0; border: 0; border-bottom: 1px dashed rgba(22, 20, 18, 0.4); border-radius: 0; background: transparent; color: inherit; font: inherit; text-transform: uppercase; caret-color: var(--red); }
+    .who::placeholder, .lines::placeholder { color: rgba(22, 20, 18, 0.42); }
+    .lines { display: block; width: 100%; min-height: 5.4em; padding: 8px 10px; resize: none; border: 0; border-left: 2px solid var(--red); border-radius: 0; background: rgba(22, 20, 18, 0.045); color: inherit; font: inherit; line-height: 1.3; caret-color: var(--red); }
+    .who:focus, .lines:focus { outline: none; background-color: rgba(239, 43, 58, 0.06); }
+    .send { display: flex; flex-wrap: wrap; gap: 10px; margin: 1.6em 0 1.4em 18%; }
+    .btn-send, .btn-tg { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; cursor: pointer; font: 700 11.5px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; transition: background 0.2s, color 0.2s; }
+    .btn-send { border: 1px solid #161412; background: #161412; color: var(--paper); }
+    .btn-send:hover { background: var(--red); border-color: var(--red); color: #fff; }
+    .btn-tg { border: 1px solid #161412; background: transparent; color: #161412; }
+    .btn-tg:hover { background: #161412; color: var(--paper); }
+    .also { max-width: 720px; margin: 24px auto 0; text-align: center; font: 600 10.5px/2 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .also a { color: var(--soft); border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+    .also a:hover { color: #fff; border-color: var(--red); }
+    .twv .off { color: transparent; }
+    .typing .twv .on::after { content: ""; display: inline-block; width: 0.55em; height: 1em; margin-left: 1px; vertical-align: -0.12em; background: #161412; }
+
+    .toast { position: fixed; z-index: 90; left: 50%; bottom: 96px; max-width: calc(100% - 32px); transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 12px 16px; border-radius: 8px; background: #fff; color: #000; font: 600 13px/1.4 var(--sans); text-align: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); transition: opacity 0.3s, transform 0.3s; }
+    .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+    .roll-t { margin: 0; font: 400 clamp(44px, 7vw, 110px)/0.9 var(--display); text-transform: uppercase; letter-spacing: 0.02em; }
+    .roll-sig { margin: 20px 0 60px; font: 400 clamp(34px, 4.6vw, 64px)/1 var(--script); color: var(--red-2); text-shadow: 0 0 30px rgba(239, 43, 58, 0.35); }
+    .cr { display: grid; gap: 26px; margin: 0 0 70px; }
+    .cr dt { font: 600 10.5px/1.6 var(--mono); letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
+    .cr dd { margin: 4px 0 0; font: 700 clamp(17px, 1.8vw, 23px)/1.35 var(--sans); }
+    .cr a { border-bottom: 1px solid rgba(255, 255, 255, 0.22); }
+    .cr a:hover { color: var(--red-2); border-color: var(--red); }
+    .cr-h { margin: 0 0 22px; font: 600 10.5px/1.6 var(--mono); letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
+    .starring { display: grid; gap: 14px; max-width: 620px; margin: 0 auto 70px; padding: 0; list-style: none; }
+    .starring li { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 12px; font: 700 clamp(16px, 1.7vw, 21px)/1.3 var(--sans); }
+    .starring li span:last-child { font-weight: 400; font-style: italic; color: var(--soft); }
+    .starring i { border-bottom: 1px dotted rgba(255, 255, 255, 0.28); transform: translateY(-5px); }
+    .disclaimer { margin: 0 auto 70px; max-width: 520px; font: 500 12px/1.6 var(--mono); letter-spacing: 0.06em; color: var(--muted); }
+    .fin { margin: 0; font: 400 clamp(60px, 9vw, 130px)/1 var(--script); color: var(--red-2); text-shadow: 0 0 50px rgba(239, 43, 58, 0.5); }
+    .copy { margin: 26px 0 0; font: 600 10.5px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .post-k { margin: 0 0 18px; font: 600 10.5px/1 var(--mono); letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+    .bubble { display: inline-block; margin: 0; padding: 14px 18px; border: 3px solid #fff; background: #000; font: 700 clamp(16px, 1.6vw, 20px)/1.2 var(--mono); }
+    .post-cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 26px; }
+
+    /* =====================================================================
+       THE FILM — a fixed screen; scenes are layers the projector cross-fades
+       ===================================================================== */
+    html.cine, html.cine body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+    html.cine body { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+    html.cine .page, html.cine .page * { -webkit-user-select: text; user-select: text; }
+    html.cine textarea, html.cine input { touch-action: auto; }
+    .cine #gl { display: block; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; opacity: 0; transition: opacity 0.25s; }
+    .cine #gl.on { opacity: 1; }
+    .cine .sc { position: fixed; inset: 0; z-index: 2; visibility: hidden; opacity: 0; overflow: hidden; padding: 0; }
+    .cine .sc.on { visibility: visible; }
+    .cine .stage { position: absolute; inset: 0; padding: 0; }
+    html.idle, html.idle * { cursor: none !important; }
+
+    /* ---------- the player ---------- */
+    .cine .player {
+      position: fixed; z-index: 70; left: 50%; bottom: 14px; transform: translateX(-50%);
+      width: min(940px, calc(100% - 20px)); display: flex; align-items: center; gap: 10px;
+      padding: 7px 8px; border-radius: 14px;
+      background: rgba(12, 11, 10, 0.62); border: 1px solid rgba(255, 255, 255, 0.09);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4);
+      box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.8);
+      font: 600 10px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft);
+      transition: opacity 0.6s, transform 0.6s var(--ease);
+    }
+    html.preshow .player, html.preshow .top { opacity: 0; pointer-events: none; }
+    html.idle .player { opacity: 0; transform: translate(-50%, 16px); pointer-events: none; }
+    html.idle .top { opacity: 0; transform: translateY(-12px); }
+    .pbtn { flex: none; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 9px; border: 1px solid rgba(255, 255, 255, 0.14); background: transparent; cursor: pointer; color: #fff; transition: background 0.2s, border-color 0.2s, transform 0.2s; }
+    .pbtn:hover { background: rgba(255, 255, 255, 0.1); }
+    .pbtn svg { width: 16px; height: 16px; }
+    .pp { width: 42px; height: 42px; border-radius: 50%; background: #fff; color: #000; border-color: #fff; }
+    .pp:hover { background: var(--amber); border-color: var(--amber); }
+    .pp svg { display: none; width: 16px; height: 16px; }
+    .pp[data-state="play"] .i-play, .pp[data-state="pause"] .i-pause, .pp[data-state="replay"] .i-replay { display: block; }
+    .pp[data-state="play"] .i-play { margin-left: 3px; }
+    .snd .s-on { display: none; }
+    .snd[aria-pressed="true"] { background: var(--red); border-color: var(--red); }
+    .snd[aria-pressed="true"] .s-on { display: block; }
+    .snd[aria-pressed="true"] .s-off { display: none; }
+    .tc { flex: none; min-width: 86px; color: #fff; font-variant-numeric: tabular-nums; text-align: center; }
+    .track { flex: 1; display: flex; gap: 3px; height: 26px; min-width: 0; }
+    .track button {
+      position: relative; isolation: isolate; flex: var(--w, 1) 1 0; min-width: 0; overflow: hidden; padding: 0 7px;
+      border: 0; border-radius: 4px; background: rgba(255, 255, 255, 0.08); cursor: pointer; text-align: left;
+      font: 600 9.5px/26px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); white-space: nowrap; text-overflow: ellipsis;
+      transition: background 0.2s, color 0.2s;
+    }
+    .track button:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
+    .track button.on { color: #fff; }
+    .track button i { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(239, 43, 58, 0.45), rgba(239, 43, 58, 0.75)); transform-origin: left; transform: scaleX(var(--f, 0)); }
+    .now { flex: none; min-width: 120px; text-align: right; color: #fff; padding-right: 4px; }
+    .bigicon { display: grid; place-items: center; position: fixed; z-index: 75; left: 50%; top: 50%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; background: rgba(0, 0, 0, 0.45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fff; pointer-events: none; opacity: 0; }
+    .bigicon svg { width: 34px; height: 34px; display: none; }
+    .bigicon[data-kind="play"] .i-play { display: block; margin-left: 5px; }
+    .bigicon[data-kind="pause"] .i-pause { display: block; }
+    .bigicon.show { animation: big 0.75s ease-out; }
+    @keyframes big { 0% { opacity: 0.95; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.35); } }
+    .paused .pausenote { opacity: 1; transform: none; }
+    .pausenote { position: fixed; z-index: 70; left: 50%; bottom: 74px; transform: translate(-50%, 8px); margin: 0; opacity: 0; pointer-events: none; transition: opacity 0.4s, transform 0.4s var(--ease); font: 600 10px/1 var(--mono); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); text-shadow: 0 1px 8px #000; white-space: nowrap; }
+    html.preshow .pausenote { display: none; }
+
+    /* ---------- scenes 01–02 overlays on the 3D ---------- */
+    .cine .sc-open { pointer-events: none; }
+    .cine .sc-open .stage { text-align: center; }
+    .cine .t-layer { position: absolute; inset: 0; --tt: 30vh; --tb: 60vh; }
+    .cine .t-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .cine .t-presents { position: absolute; left: 0; right: 0; top: calc(var(--tt) - 44px); margin: 0; }
+    .cine .t-tag { position: absolute; left: 0; right: 0; top: calc(var(--tb) + 30px); margin: 0; }
+    .cine .t-logline { position: absolute; left: 0; right: 0; top: calc(var(--tb) + 62px); margin: 0; padding: 0 20px; }
+    .cine .t-billing { position: absolute; left: 50%; top: calc(var(--tb) + 104px); width: min(820px, calc(100% - 40px)); margin: 0; transform: translateX(-50%) scaleY(1.6); }
+    .cine .t-hint { display: block; position: absolute; left: 0; right: 0; bottom: 92px; margin: 0; font: 600 10px/1 var(--mono); letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); }
+    .cine .t-presents, .cine .t-tag, .cine .t-logline, .cine .t-billing, .cine .t-hint { opacity: 0; text-shadow: 0 1px 12px #000; }
+    .cine .lb { display: block; position: absolute; left: 0; right: 0; z-index: 5; height: min(11vh, max(0px, calc((100vh - 100vw / 2.39) / 2))); background: #000; transition: transform 1.2s cubic-bezier(0.7, 0, 0.2, 1); }
+    .cine .lb.t { top: 0; transform-origin: top; transform: scaleY(0); }
+    .cine .lb.b { bottom: 0; transform-origin: bottom; transform: scaleY(0); }
+    .cine .boxed .lb { transform: scaleY(1); }
+    .cine .slugline { display: block; position: absolute; z-index: 6; left: clamp(18px, 5vw, 72px); top: clamp(64px, 13vh, 120px); margin: 0; font: 700 clamp(12px, 1.15vw, 15px)/1.3 var(--type); letter-spacing: 0.04em; color: #fff; text-shadow: 0 1px 10px #000; text-align: left; }
+    .cine .slugline.typing::after { content: ""; display: inline-block; width: 0.55em; height: 1em; margin-left: 2px; vertical-align: -0.15em; background: #fff; }
+    .cine .subs { position: absolute; z-index: 6; left: 0; right: 0; bottom: clamp(100px, 16vh, 150px); max-width: none; margin: 0; }
+    .cine .sub { position: absolute; left: 50%; bottom: 0; width: min(880px, 92vw); margin: 0; transform: translateX(-50%); opacity: 0; text-align: center; font: 600 clamp(16px, 1.65vw, 24px)/1.42 var(--sans); color: #fff; text-shadow: 0 0 5px #000, 0 2px 2px #000, 0 0 22px rgba(0, 0, 0, 0.85); }
+    .cine .flash { display: block; position: absolute; inset: 0; z-index: 7; background: #fff8ee; opacity: 0; pointer-events: none; }
+
+    /* ---------- scene 03: the playable scene ---------- */
+    .cine .arena { background: #000; }
+    .cine .ar-screen {
+      position: absolute; inset: 0; overflow: hidden; transform-origin: 50% 50%;
+      background:
+        radial-gradient(50% 45% at 74% 26%, rgba(242, 180, 55, 0.13), transparent 70%),
+        radial-gradient(70% 60% at 50% 110%, rgba(59, 255, 158, 0.06), transparent 70%),
+        repeating-linear-gradient(0deg, rgba(122, 140, 166, 0.075) 0 1px, transparent 1px 56px),
+        repeating-linear-gradient(90deg, rgba(122, 140, 166, 0.075) 0 1px, transparent 1px 56px),
+        linear-gradient(#0c1222, #05070c);
+    }
+    .cine .ar-head { position: absolute; z-index: 3; left: clamp(18px, 5vw, 72px); top: clamp(74px, 12vh, 112px); max-width: min(46vw, 640px); margin: 0; }
+    .cine .ar-title { opacity: 0; transform: scale(1.7); filter: blur(10px); transform-origin: left center; }
+    .cine .slammed .ar-title { opacity: 1; transform: none; filter: blur(0); transition: transform 0.55s cubic-bezier(0.2, 1.5, 0.35, 1), opacity 0.2s, filter 0.4s; }
+    .cine .mode { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 7px 11px; border: 1px solid rgba(232, 250, 255, 0.25); border-radius: 999px; font: 700 10px/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(232, 250, 255, 0.75); }
+    .mode i { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 8px var(--amber); animation: blink 1.2s steps(1) infinite; }
+    .user .mode { border-color: rgba(59, 255, 158, 0.5); color: var(--green); }
+    .user .mode i { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    @keyframes blink { 50% { opacity: 0.2; } }
+    .cine .boss { display: block; position: absolute; z-index: 3; right: clamp(18px, 6vw, 96px); top: clamp(76px, 12vh, 112px); width: clamp(190px, 24vw, 330px); text-align: center; }
+    .hp { height: 8px; border-radius: 99px; overflow: hidden; background: rgba(255, 255, 255, 0.1); }
+    .hp i { display: block; height: 100%; background: linear-gradient(90deg, #ff2d4f, #ff7070); box-shadow: 0 0 12px #ff3355; transform-origin: left; transition: transform 0.45s var(--ease); }
+    .boss-name { display: flex; justify-content: space-between; margin: 8px 0 0; font: 600 10px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: #e8faff; }
+    .dragon { width: 80%; margin: 12px auto 0; aspect-ratio: 545 / 485; background: url("assets/img/cards/typing-me.jpg") no-repeat; background-size: 513.8% auto; background-position: 91.8% 1.4%; mix-blend-mode: lighten; -webkit-mask: radial-gradient(closest-side, #000 74%, transparent); mask: radial-gradient(closest-side, #000 74%, transparent); animation: bob 2.6s ease-in-out infinite; }
+    @keyframes bob { 50% { transform: translateY(-9px); } }
+    .dragon.hit { animation: hitshake 0.38s; filter: brightness(2.8) saturate(0.3); }
+    @keyframes hitshake { 0%, 100% { transform: none; } 20% { transform: translate(-9px, 3px) rotate(-3deg); } 40% { transform: translate(8px, -4px) rotate(3deg); } 60% { transform: translate(-5px, 2px); } 80% { transform: translate(4px, -1px); } }
+    .dragon.dead { animation: die 1.1s forwards; }
+    @keyframes die { 0% { transform: none; filter: brightness(1); } 30% { transform: scale(1.12); filter: brightness(3); } 100% { transform: scale(1.6) translateY(-30px); filter: brightness(4) blur(14px); opacity: 0; } }
+    .cine .field { display: block; position: absolute; z-index: 4; left: 47%; right: 3%; top: 34%; bottom: 17%; }
+    .field.miss { animation: miss 0.25s; }
+    @keyframes miss { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+    .word { position: absolute; left: 0; top: 0; padding: 6px 8px; cursor: pointer; user-select: none; -webkit-user-select: none; white-space: nowrap; will-change: transform; font: 700 clamp(19px, 1.9vw, 28px)/1 var(--mono); color: #e8faff; text-shadow: 0 0 14px rgba(232, 250, 255, 0.35); transition: opacity 0.3s; }
+    .word b { color: var(--green); text-shadow: 0 0 16px rgba(59, 255, 158, 0.75); }
+    .word.tgt::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 0; height: 2px; background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .word.gone { opacity: 0; }
+    .word.pop { animation: pop 0.32s forwards; }
+    @keyframes pop { to { opacity: 0; filter: blur(4px) brightness(3); letter-spacing: 0.3em; } }
+    .cine .prompt { display: flex; align-items: center; gap: 10px; position: absolute; z-index: 4; left: 68%; bottom: clamp(92px, 14vh, 128px); transform: translateX(-50%); margin: 0; font: 700 10.5px/1 var(--mono); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(232, 250, 255, 0.78); white-space: nowrap; }
+    .prompt .k { padding: 5px 7px; border: 1px solid rgba(232, 250, 255, 0.4); border-bottom-width: 3px; border-radius: 5px; letter-spacing: 0; animation: tap 1.6s ease-in-out infinite; }
+    @keyframes tap { 50% { transform: translateY(2px); border-bottom-width: 1px; } }
+    .cine .ar-stats { display: flex; gap: 16px; position: absolute; z-index: 4; right: clamp(18px, 6vw, 96px); top: calc(clamp(76px, 12vh, 112px) + clamp(190px, 24vw, 330px) * 0.9 + 40px); margin: 0; font: 700 10.5px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(232, 250, 255, 0.6); opacity: 0; transition: opacity 0.4s; }
+    .user .ar-stats { opacity: 1; }
+    .ar-stats b { color: var(--green); font-size: 14px; margin-left: 4px; }
+    .cine .ar-facts { position: absolute; z-index: 5; left: clamp(18px, 5vw, 72px); bottom: clamp(92px, 14vh, 128px); width: min(400px, 31vw); margin: 0; }
+    .cine .ar-facts p { font-size: 13.5px; line-height: 1.55; }
+    .cine .ar-scan { display: block; position: absolute; inset: 0; z-index: 9; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 3px); }
+    .cine .ar-glow { display: block; position: absolute; inset: 0; z-index: 10; background: #fff; opacity: 0; pointer-events: none; }
+    .pix { position: absolute; left: 0; top: 0; z-index: 6; width: 7px; height: 7px; pointer-events: none; background: var(--green); box-shadow: 0 0 10px var(--green); transition: transform 0.5s cubic-bezier(0.3, 0, 0.2, 1), opacity 0.5s ease-in; }
+    .dmg { position: absolute; z-index: 7; margin: 0; font: 800 28px/1 var(--mono); color: #ff4655; text-shadow: 0 0 14px #ff3355; pointer-events: none; animation: dmg 0.95s forwards; }
+    @keyframes dmg { from { transform: translateY(0) scale(1.4); opacity: 1; } to { transform: translateY(-60px) scale(1); opacity: 0; } }
+    .shake { animation: shake 0.3s; }
+    @keyframes shake { 25% { translate: 4px -3px; } 50% { translate: -4px 2px; } 75% { translate: 2px 3px; } }
+    .cine .banner { display: block; position: absolute; z-index: 6; left: 50%; top: 46%; transform: translate(-50%, -50%) scale(0.9); margin: 0; opacity: 0; text-align: center; pointer-events: none; transition: opacity 0.5s, transform 0.6s var(--ease); }
+    .banner.on { opacity: 1; transform: translate(-50%, -50%); }
+    .banner b { display: block; font: 400 clamp(46px, 7vw, 100px)/0.9 var(--display); text-transform: uppercase; color: #fff; text-shadow: 0 0 40px rgba(59, 255, 158, 0.35); }
+    .banner span { display: block; margin-top: 12px; font: 700 11px/1 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--green); }
+    .cine .win { display: grid; place-items: center; position: absolute; inset: 0; z-index: 8; padding: 20px; background: rgba(4, 6, 12, 0.78); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s; text-align: center; }
+    .cine .win.on { opacity: 1; visibility: visible; }
+    .win-t { margin: 0; font: 400 clamp(60px, 10vw, 150px)/0.9 var(--display); text-transform: uppercase; color: #fff; text-shadow: 0 0 50px rgba(59, 255, 158, 0.4); }
+    .win-s { max-width: 520px; margin: 18px auto 0; color: var(--soft); }
+    .win-s b { color: var(--green); }
+    .win .ar-links { justify-content: center; }
+
+    /* ---------- scene 04: overlays on the 3D strip ---------- */
+    .cine .sc-cast { pointer-events: none; }
+    .cine .sc-cast a, .cine .sc-cast button { pointer-events: auto; }
+    .cine .cast-head { position: absolute; left: clamp(18px, 5vw, 72px); top: clamp(64px, 10vh, 96px); max-width: none; margin: 0; }
+    .cine .cast-head h2 { font-size: clamp(30px, 3.6vw, 52px); text-shadow: 0 2px 20px #000; }
+    .cine .cast-info { position: absolute; left: 50%; bottom: clamp(140px, 19vh, 176px); transform: translateX(-50%); display: grid; grid-template-columns: 1fr; width: min(760px, calc(100% - 36px)); margin: 0; text-align: center; }
+    .cine .ci { grid-area: 1 / 1; align-self: end; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 0.5s, transform 0.6s var(--ease), visibility 0.5s; text-shadow: 0 2px 16px #000; }
+    .cine .ci.on { opacity: 1; visibility: visible; transform: none; }
+    .cine .ci-img { display: none; }
+    .cine .ci h3 { font-size: clamp(30px, 3.2vw, 44px); }
+    .cine .ci-d { margin: 6px auto 0; font-size: 14.5px; }
+    .cine .chips { display: flex; position: absolute; left: 50%; bottom: clamp(88px, 12vh, 110px); transform: translateX(-50%); gap: 6px; flex-wrap: wrap; justify-content: center; width: max-content; max-width: calc(100% - 24px); }
+    .chips button { padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255, 220, 180, 0.25); background: rgba(10, 7, 5, 0.55); color: rgba(255, 230, 205, 0.8); font: 700 10px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    .chips button:hover { border-color: rgba(255, 220, 180, 0.6); color: #fff; }
+    .chips button.on { background: var(--amber); border-color: var(--amber); color: #120a04; }
+
+    /* ---------- scene 05 & 06 on the screen ---------- */
+    .cine .sc-script { display: grid; place-content: center; padding: clamp(64px, 9vh, 90px) 14px clamp(84px, 12vh, 104px); }
+    .cine .desk-head { margin-bottom: clamp(12px, 2vh, 22px); }
+    .cine .desk-head h2 { font-size: clamp(30px, 3.6vw, 50px); }
+    .cine .page { width: min(700px, calc(100vw - 28px)); font-size: clamp(12px, min(1.25vw, 1.75vh), 15.5px); padding: clamp(30px, 5.2vh, 60px) clamp(18px, 6vw, 64px) clamp(22px, 4vh, 44px) clamp(24px, 9vw, 92px); opacity: 0; transform: translateY(70px) rotate(2deg); transition: transform 1.3s var(--ease), opacity 0.9s; }
+    .cine .page.in { opacity: 1; transform: rotate(-0.6deg); }
+    .cine .page p { margin-bottom: 0.95em; }
+    .cine .also { margin-top: clamp(10px, 2vh, 20px); }
+    .cine .callout { display: block; position: absolute; z-index: 3; right: clamp(16px, 6vw, 90px); top: 50%; width: 210px; margin: 0; padding: 14px 16px; border-radius: 8px; background: rgba(255, 207, 138, 0.1); border: 1px solid rgba(255, 207, 138, 0.35); color: #ffe3c2; font: 600 12.5px/1.45 var(--sans); opacity: 0; transform: translate(10px, -50%); transition: opacity 0.6s, transform 0.6s var(--ease); pointer-events: none; }
+    .callout b { display: block; margin-bottom: 4px; font: 700 10px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); }
+    .callout.on { opacity: 1; transform: translate(0, -50%); }
+
+    .cine .sc-credits { background: #000; }
+    .cine .roll { position: absolute; left: 0; right: 0; top: 0; max-width: none; padding: 0 20px; will-change: transform; }
+    .cine .roll > * { max-width: 760px; margin-left: auto; margin-right: auto; }
+    .cine .post { position: absolute; inset: 0; margin: 0; display: grid; place-content: center; justify-items: center; opacity: 0; visibility: hidden; transition: opacity 0.8s, visibility 0.8s; }
+    .cine .post.on { opacity: 1; visibility: visible; }
+    .post-row { display: flex; align-items: center; gap: 22px; }
+    .cine .post-dragon { display: block; width: clamp(120px, 16vw, 210px); aspect-ratio: 545 / 485; background: url("assets/img/cards/typing-me.jpg") no-repeat; background-size: 513.8% auto; background-position: 91.8% 1.4%; mix-blend-mode: lighten; -webkit-mask: radial-gradient(closest-side, #000 74%, transparent); mask: radial-gradient(closest-side, #000 74%, transparent); transform: translateY(40px) scale(0.8); opacity: 0; transition: transform 0.9s cubic-bezier(0.2, 1.4, 0.35, 1) 0.4s, opacity 0.6s 0.4s; }
+    .cine .post.on .post-dragon { transform: none; opacity: 1; }
+    .cine .bubble { position: relative; opacity: 0; transform: scale(0.6); transform-origin: left center; transition: transform 0.4s cubic-bezier(0.2, 1.5, 0.35, 1) 1.2s, opacity 0.2s 1.2s; }
+    .cine .post.on .bubble { opacity: 1; transform: none; }
+    .bubble::before { content: ""; position: absolute; left: -15px; top: 50%; width: 14px; height: 14px; background: #000; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: translateY(-50%) rotate(45deg); }
+
+    /* ================= responsive ================= */
+    @media (max-width: 900px) {
+      .cine .field { left: 4%; top: 38%; bottom: 24%; }
+      .cine .prompt { left: 50%; bottom: calc(clamp(92px, 14vh, 128px) + 64px); }
+      .cine .ar-facts { width: auto; right: clamp(18px, 5vw, 72px); }
+      .cine .ar-facts h3, .cine .ar-facts p, .cine .ar-facts .facts { display: none; }
+      .cine .ar-head { max-width: 60vw; }
+      .cine .boss { width: clamp(130px, 30vw, 200px); }
+      .cine .boss-name span:first-child { display: none; }
+      .cine .ar-stats { top: auto; bottom: calc(clamp(92px, 14vh, 128px) + 100px); right: auto; left: clamp(18px, 5vw, 72px); }
+      .cine .callout { position: absolute; top: auto; bottom: 74px; right: 50%; transform: translate(50%, 10px); width: min(320px, calc(100% - 32px)); text-align: center; }
+      .cine .callout.on { transform: translate(50%, 0); }
+    }
+    @media (max-width: 700px) {
+      .now, .gate-ticket, .tc { display: none; }
+      .track button { font-size: 0; padding: 0; }
+      .mark span { display: none; }
+      .cine .player { gap: 6px; }
+      .desk-head { display: block; }
+      .desk-head p { text-align: left; margin-top: 6px; max-width: none; }
+      .cine .desk-head p { display: none; }
+      .cue-l { margin-left: 30% !important; }
+      .paren { margin-left: 20% !important; }
+      .dlg { margin: 0 2% 1em 8% !important; }
+      .send { margin-left: 0; }
+      .starring li { grid-template-columns: 1fr; gap: 2px; text-align: center; }
+      .starring i { display: none; }
+      .post-row { flex-direction: column; }
+      .bubble::before { display: none; }
+      .gate-top span:last-child { display: none; }
+      .gate-note { bottom: 64px; }
+      .cine .ci-d { display: none; }
+      .cine .cast-info { bottom: 150px; }
+      .cine .t-billing { display: none; }
+      .cine .also { display: none; }
+      .cine .callout { display: none; }
+      .cine .prompt { bottom: calc(clamp(92px, 14vh, 128px) + 118px); }
+      .pausenote { bottom: 70px; font-size: 9px; letter-spacing: 0.16em; }
     }
 
-    .card {
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--rim);
-      border-bottom-width: 4px;
-      border-radius: 16px;
-      background: linear-gradient(var(--plate-2), var(--plate));
-      overflow: hidden;
-      transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
-    }
-    .card:hover { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 0 28px var(--gold-soft); }
-    .card.featured { grid-column: 1 / -1; }
-
-    .shot {
-      display: block;
-      width: 100%;
-      aspect-ratio: 16 / 7;
-      object-fit: cover;
-      object-position: top;
-      background: var(--ink);
-      border-bottom: 1px solid var(--rim);
-    }
-    .featured .shot { aspect-ratio: 21 / 9; }
-
-    .card-body { display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 24px; flex: 1; }
-
-    .card-title { display: flex; align-items: center; gap: 14px; }
-    .card-title img { width: 44px; height: 44px; border-radius: 11px; }
-    .card-title h3 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: 0.04em; }
-
-    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-    .tags li {
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 3px 9px;
-      border: 1px solid var(--rim);
-      border-radius: 6px;
-    }
-    .tags li.live { color: var(--spring); border-color: rgba(59, 255, 158, 0.35); }
-
-    .card p { margin: 0; color: #c6d3e2; }
-
-    .links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: auto; padding-top: 6px; font-family: var(--mono); font-size: 14px; letter-spacing: 0.06em; }
-    .links a::after { content: " ↗"; color: var(--muted); }
-
-    /* ---------- about ---------- */
-    .about { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; }
-    .about p { margin: 0 0 16px; max-width: 60ch; }
-    .facts { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
-    .facts li { display: grid; grid-template-columns: 120px 1fr; gap: 12px; font-size: 17px; }
-    .facts dt, .facts .k { font-family: var(--mono); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
-
-    /* ---------- contact ---------- */
-    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-    .contact {
-      display: flex; flex-direction: column; gap: 4px;
-      padding: 18px 20px;
-      border: 1px solid var(--rim); border-bottom-width: 3px; border-radius: 12px;
-      background: var(--plate);
-      color: var(--text);
-      transition: border-color 0.2s, transform 0.12s;
-    }
-    .contact:hover { border-color: var(--gold); text-decoration: none; }
-    .contact:active { transform: translateY(2px); border-bottom-width: 1px; }
-    .contact .k { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-    .contact .v { font-size: 18px; }
-
-    footer { padding: 40px 0 48px; font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
-
-    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-
-    @media (max-width: 800px) {
-      body { font-size: 18px; }
-      nav { gap: 18px; }
-      .hero { padding: 40px 0 56px; }
-      .grid { grid-template-columns: 1fr; }
-      .featured .shot { aspect-ratio: 16 / 9; }
-      .about { grid-template-columns: 1fr; }
-      .facts li { grid-template-columns: 100px 1fr; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .key { animation: none; color: var(--gold); border-color: var(--gold); }
-      .typed::after { animation: none; }
-      .card, .btn, .contact, .key { transition: none; }
+    @media print {
+      .fx-grain, .fx-dust, .fx-vig, .fx-flicker, .cue, .gate, .leader, .player, .top, #gl, .flash, .ar-glow { display: none !important; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <a class="monogram" href="#top" aria-label="Rahmatillokh Dev — top">R</a>
-      <nav aria-label="Sections">
-        <a href="#projects">Projects</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </header>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-    <section class="hero" id="top">
-      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Namangan, Uzbekistan · Founder of AYS Apps</p>
-
-      <h1 class="visually-hidden">Rahmatillokh Dev</h1>
-      <div class="keys" aria-hidden="true">
-        <span class="key" style="--i:0">R</span><span class="key" style="--i:1">A</span><span class="key" style="--i:2">H</span><span class="key" style="--i:3">M</span><span class="key" style="--i:4">A</span><span class="key" style="--i:5">T</span><span class="key" style="--i:6">I</span><span class="key" style="--i:7">L</span><span class="key" style="--i:8">L</span><span class="key" style="--i:9">O</span><span class="key" style="--i:10">K</span><span class="key" style="--i:11">H</span>
-      </div>
-
-      <p class="lede">Web &amp; game developer. I build apps people in Uzbekistan use every day — and <strong>a game where the keyboard is the weapon.</strong></p>
-      <p class="typed" id="typed" aria-hidden="true"></p>
-
-      <div class="actions">
-        <a class="btn primary" href="https://rahmatillokh.github.io/typing-me/">▶ Play Typing Me</a>
-        <a class="btn" href="#projects">See projects</a>
-        <a class="btn" href="#contact">Contact</a>
-      </div>
-    </section>
-
-    <section id="projects">
-      <div class="section-head">
-        <h2>Projects</h2>
-        <p class="eyebrow">Shipped and live</p>
-      </div>
-
-      <div class="grid">
-        <article class="card featured">
-          <img class="shot" src="assets/img/cards/typing-me.jpg" alt="Typing Me — a pixel-art dragon above falling words and a neon keyboard" loading="lazy">
-          <div class="card-body">
-            <div class="card-title">
-              <img src="assets/img/typing-me-game-icon.png" alt="">
-              <h3>Typing Me</h3>
-            </div>
-            <ul class="tags">
-              <li class="live">Play in browser</li><li>Game</li><li>Windows</li><li>macOS</li><li>Open source</li>
-            </ul>
-            <p>A neon typing-action game. Words rain from pixel-art bosses and every word you type is a hit — 80 levels across four seasons, five hand-drawn bosses, a keyboard that re-routes to the word you meant. Built in Unity, fully offline, with a procedural synthwave soundtrack.</p>
-            <div class="links">
-              <a href="https://rahmatillokh.github.io/typing-me/">Play now</a>
-              <a href="https://github.com/rahmatillokh/typing-me/releases/latest">Download for desktop</a>
-              <a href="https://github.com/rahmatillokh/typing-me">Source on GitHub</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="card">
-          <img class="shot" src="assets/img/cards/marketpos.jpg" alt="MarketPOS — a sales dashboard beside a printed receipt" loading="lazy">
-          <div class="card-body">
-            <div class="card-title">
-              <img src="assets/img/marketpos-icon.png" alt="">
-              <h3>MarketPOS</h3>
-            </div>
-            <ul class="tags"><li>SaaS</li><li>Point of sale</li></ul>
-            <p>Point-of-sale for shops and sales points: multi-warehouse inventory, sales, staff and customer debt, real-time reports, an offline mode, and Telegram notifications.</p>
-            <div class="links"><a href="https://marketpos.uz">marketpos.uz</a></div>
-          </div>
-        </article>
-
-        <article class="card">
-          <img class="shot" src="assets/img/cards/avtolingo.jpg" alt="Avtolingo — a road with a yield sign and a stop sign, lives and gems" loading="lazy">
-          <div class="card-body">
-            <div class="card-title">
-              <img src="assets/img/avtolingo-icon.png" alt="">
-              <h3>Avtolingo</h3>
-            </div>
-            <ul class="tags"><li>Mobile app</li><li>Free</li></ul>
-            <p>Driver's licence exam prep that plays like a game: the real YHQ (PDD) questions, lives, gems, and weekly and monthly leaderboards.</p>
-            <div class="links"><a href="https://avtolingo.uz">avtolingo.uz</a></div>
-          </div>
-        </article>
-
-        <article class="card">
-          <img class="shot" src="assets/img/cards/edu360.jpg" alt="Edu360 — stacked test cards beside a 360° ring" loading="lazy">
-          <div class="card-body">
-            <div class="card-title">
-              <img src="assets/img/edu360-icon.png" alt="">
-              <h3>Edu360</h3>
-            </div>
-            <ul class="tags"><li>Education</li><li>Free for students</li></ul>
-            <p>Online testing across every school subject, with an IELTS section, a vertical feed, and teacher profiles where teachers publish their own tests.</p>
-            <div class="links"><a href="https://edu360.uz">edu360.uz</a></div>
-          </div>
-        </article>
-
-        <article class="card">
-          <img class="shot" src="assets/img/cards/speedtest.jpg" alt="Typing Me speed test — a WPM gauge reading 84 beside a half-typed sentence" loading="lazy">
-          <div class="card-body">
-            <div class="card-title">
-              <img src="assets/img/typing-me-icon.svg" alt="">
-              <h3>Typing Me — speed test</h3>
-            </div>
-            <ul class="tags"><li>Web</li><li>No sign-up</li></ul>
-            <p>Free typing test for WPM, accuracy and consistency. Five modes, six themes, no registration, no ads — the tool the game grew out of.</p>
-            <div class="links"><a href="https://typing-me.aysapps.uz">typing-me.aysapps.uz</a></div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="about">
-      <div class="section-head">
-        <h2>About</h2>
-        <p class="eyebrow">AYS Apps</p>
-      </div>
-      <div class="about">
-        <div>
-          <p>I'm Rahmatillokh, founder of <a href="https://aysapps.uz">AYS Apps</a> — a small studio in Namangan that builds Android and iOS apps, web panels and SaaS platforms, from the first concept through app-store release.</p>
-          <p>Most of my work is software people rely on daily: a point-of-sale system for shops, an exam-prep app for new drivers, a testing platform for students. Between those, I make games — because a keyboard is more fun when something is fighting back.</p>
-        </div>
-        <ul class="facts">
-          <li><span class="k">Based in</span><span>Namangan, Uzbekistan</span></li>
-          <li><span class="k">Builds</span><span>Mobile apps, web panels, SaaS, games</span></li>
-          <li><span class="k">Stack</span><span>Unity &amp; C#, web front and back ends, Android &amp; iOS</span></li>
-          <li><span class="k">Studio</span><span><a href="https://aysapps.uz">aysapps.uz</a></span></li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="contact">
-      <div class="section-head">
-        <h2>Contact</h2>
-        <p class="eyebrow">Usually replies within a business day</p>
-      </div>
-      <div class="contact-grid">
-        <a class="contact" href="https://t.me/rahmatillokh_web"><span class="k">Telegram</span><span class="v">@rahmatillokh_web</span></a>
-        <a class="contact" href="mailto:webcoder292@gmail.com"><span class="k">Email</span><span class="v">webcoder292@gmail.com</span></a>
-        <a class="contact" href="https://www.youtube.com/@rahmatillokh"><span class="k">YouTube</span><span class="v">@rahmatillokh</span></a>
-        <a class="contact" href="https://github.com/rahmatillokh"><span class="k">GitHub</span><span class="v">rahmatillokh</span></a>
-        <a class="contact" href="https://www.instagram.com/rahmatillo.dev"><span class="k">Instagram</span><span class="v">rahmatillo.dev</span></a>
-        <a class="contact" href="https://tirikchilik.uz/rahmatillokh"><span class="k">Support the work</span><span class="v">tirikchilik.uz</span></a>
-      </div>
-    </section>
-
-    <footer>
-      <span>© 2026 Rahmatillokh Dev</span>
-      <span>Hand-built, hosted on GitHub Pages · <a href="https://github.com/rahmatillokh/rahmatillokh.github.io">source</a></span>
-    </footer>
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div aria-hidden="true">
+    <div class="fx-grain"></div>
+    <canvas class="fx-dust" id="dust"></canvas>
+    <div class="fx-vig"></div>
+    <div class="fx-flicker"></div>
+    <i class="cue" id="cue"></i>
   </div>
 
-  <script>
-    // Types the working line under the name once the keys have finished lighting up.
-    (function () {
-      var el = document.getElementById("typed");
-      var text = "founder @ aysapps.uz  ·  unity · c# · web · android · ios";
-      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  <!-- the pre-show -->
+  <div class="gate" id="gate">
+    <canvas class="gate-dust" id="gdust" aria-hidden="true"></canvas>
+    <div class="gate-beam" aria-hidden="true"></div>
+    <div class="gate-top" aria-hidden="true"><span>AYS Apps · Screen 01</span><span>A film in six scenes · 2½ min</span></div>
+    <div class="gate-mid">
+      <p class="gate-k">Tonight</p>
+      <p class="gate-t">Rahmatillokh</p>
+      <p class="load" id="load" aria-live="polite"><span>Loading the reel</span><b><i></i></b><span id="load-pct">000%</span></p>
+      <button class="gate-play" id="play-sound" type="button" data-go disabled>
+        <span class="ring"><svg viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0 20 12 0 24Z" fill="currentColor"/></svg></span>
+        <span class="lab">Play with sound</span>
+      </button>
+      <button class="gate-muted" id="play-muted" type="button" data-go disabled>or watch it muted</button>
+    </div>
+    <p class="gate-note" aria-hidden="true">Sit back — it plays by itself · Space pauses</p>
+    <p class="gate-ticket" aria-hidden="true">Admit one · Row A · Seat 01</p>
+    <button class="gate-skip" id="gate-skip" type="button" data-go disabled>Skip the countdown →</button>
+  </div>
+  <canvas class="leader" id="leader" aria-hidden="true"></canvas>
 
-      if (reduce) { el.textContent = text; return; }
+  <header class="top">
+    <a class="mark" href="#top" aria-label="Rahmatillokh — back to the title"><b>R</b><span>Rahmatillokh</span></a>
+    <nav class="top-nav" aria-label="Sections"><a href="#weapon">Work</a><a href="#cast">Apps</a><a href="#contact">Contact</a></nav>
+    <a class="top-cta" href="https://rahmatillokh.github.io/typing-me/">▶ Play Typing Me</a>
+  </header>
 
-      var keys = document.querySelectorAll(".key");
-      var start = 250 + keys.length * 85 + 350;
-      var i = 0;
+  <div class="player" id="player" role="group" aria-label="Film controls">
+    <button class="pbtn pp" id="pp" type="button" data-state="play" aria-label="Play">
+      <svg class="i-play" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0 20 12 0 24Z" fill="currentColor"/></svg>
+      <svg class="i-pause" viewBox="0 0 20 24" aria-hidden="true"><path d="M2 0h5v24H2zM13 0h5v24h-5z" fill="currentColor"/></svg>
+      <svg class="i-replay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg>
+    </button>
+    <button class="pbtn snd" id="snd" type="button" aria-pressed="false" aria-label="Turn sound on">
+      <svg class="s-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor"/><path d="m17 9 5 6m0-6-5 6"/></svg>
+      <svg class="s-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+    </button>
+    <span class="tc" id="tc" aria-hidden="true">0:00 / 2:32</span>
+    <div class="track" id="track"></div>
+    <span class="now" id="now" aria-hidden="true">01 · Title</span>
+    <button class="pbtn" id="fs" type="button" aria-label="Full screen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+  <div class="bigicon" id="bigicon" aria-hidden="true">
+    <svg class="i-play" viewBox="0 0 20 24"><path d="M0 0 20 12 0 24Z" fill="currentColor"/></svg>
+    <svg class="i-pause" viewBox="0 0 20 24"><path d="M2 0h5v24H2zM13 0h5v24h-5z" fill="currentColor"/></svg>
+  </div>
+  <p class="pausenote" aria-hidden="true">Paused · Space or ▶ to continue</p>
 
-      setTimeout(function tick() {
-        el.textContent = text.slice(0, ++i);
-        if (i < text.length) setTimeout(tick, text[i - 1] === " " ? 90 : 38);
-      }, start);
-    })();
-  </script>
+  <main id="main">
+    <!-- ================= SCENES 01–02 · TITLE · NAMANGAN, NIGHT ================= -->
+    <section class="sc sc-open" id="top" aria-label="Title and story">
+      <div class="stage">
+        <div class="t-layer" id="tlayer">
+          <p class="t-presents">AYS Apps presents</p>
+          <h1 class="t-title">Rahmatillokh<span class="sr-only"> — web and game developer, founder of AYS Apps</span></h1>
+          <p class="t-tag">The keyboard is the weapon.</p>
+          <p class="t-logline">Web &amp; game developer · Founder of AYS Apps · Namangan, Uzbekistan</p>
+          <p class="t-billing" aria-hidden="true">AYS Apps presents <b>a Rahmatillokh production</b> · starring <b>Typing Me</b> · <b>MarketPOS</b> · <b>Avtolingo</b> · <b>Edu360</b> · <b>Speed Test</b> · score by a procedural synthwave engine · written in Unity &amp; C# · Web · Android · iOS · filmed on location in <b>Namangan, Uzbekistan</b> · directed by <b>Rahmatillokh</b></p>
+          <p class="t-hint" aria-hidden="true">Space — pause · ← → — jump · click anywhere to pause</p>
+        </div>
+        <i class="lb t" aria-hidden="true"></i><i class="lb b" aria-hidden="true"></i>
+        <p class="slugline" id="slug" aria-hidden="true"></p>
+        <div class="subs">
+          <p class="sub">Namangan, Uzbekistan. Late at night, one window is still on.</p>
+          <p class="sub">That’s the studio — AYS Apps.</p>
+          <p class="sub">I’m Rahmatillokh. We build Android and iOS apps, web panels and SaaS platforms — from the first concept to app-store release.</p>
+          <p class="sub">Most of it is software people rely on every day: a point of sale for shops, exam prep for new drivers, tests for students.</p>
+          <p class="sub">And between those, I make games.</p>
+          <p class="sub">Because a keyboard is more fun when something is fighting back.</p>
+        </div>
+        <div class="flash" id="flash1" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 03 · THE KEYBOARD IS THE WEAPON ================= -->
+    <section class="sc sc-game" id="weapon" aria-labelledby="weapon-h">
+      <div class="stage arena" id="s-game">
+        <div class="ar-screen" id="arscreen">
+          <div class="ar-head">
+            <p class="kick">Scene 03 · The flagship</p>
+            <h2 class="ar-title" id="weapon-h">The keyboard is the <em>weapon.</em></h2>
+            <p class="mode" aria-hidden="true"><i></i><span id="mode-t">Autoplay · director's cut</span></p>
+          </div>
+          <div class="boss" aria-hidden="true">
+            <div class="hp"><i id="hp"></i></div>
+            <p class="boss-name"><span>Rank 5 · The Dragon</span><span id="hpnum">300 / 300</span></p>
+            <div class="dragon" id="dragon"></div>
+          </div>
+          <div class="field" id="field" aria-hidden="true"></div>
+          <p class="prompt" aria-hidden="true"><span class="k">⌨</span><span id="prompt-t">Press any letter to take over</span></p>
+          <p class="ar-stats" aria-hidden="true"><span>WPM<b id="wpm">—</b></span><span>Combo<b id="combo">0</b></span></p>
+          <p class="banner" id="banner" aria-hidden="true"><b>Boss defeated</b><span>by the director · your turn next time</span></p>
+          <aside class="ar-facts" aria-label="Typing Me">
+            <h3>Typing Me</h3>
+            <p>A neon typing-action game. Words rain from pixel-art bosses and every word you type is a hit — 80 levels across four seasons, five hand-drawn bosses, a keyboard that re-routes to the word you meant. Built in Unity, fully offline, with a procedural synthwave soundtrack.</p>
+            <ul class="facts"><li><b>80</b>levels</li><li><b>4</b>seasons</li><li><b>5</b>bosses</li><li><b>100%</b>offline</li></ul>
+            <div class="ar-links">
+              <a class="btn btn-red" href="https://rahmatillokh.github.io/typing-me/">▶ Play in browser</a>
+              <a class="btn" href="https://github.com/rahmatillokh/typing-me/releases/latest">Download</a>
+              <a class="btn" href="https://github.com/rahmatillokh/typing-me">Source ↗</a>
+            </div>
+          </aside>
+          <div class="win" id="win" aria-live="polite">
+            <div>
+              <p class="kick">Boss defeated</p>
+              <p class="win-t">You win.</p>
+              <p class="win-s">You typed at <b id="win-wpm">0</b> WPM. That was one boss — Typing Me has five, across 80 levels.</p>
+              <div class="ar-links">
+                <button class="btn btn-red" id="continue" type="button">▶ Continue the film</button>
+                <a class="btn" href="https://rahmatillokh.github.io/typing-me/">Play the full game ↗</a>
+                <button class="btn" id="rematch" type="button">↺ Rematch</button>
+              </div>
+            </div>
+          </div>
+          <div class="ar-scan" aria-hidden="true"></div>
+          <div class="ar-glow" id="arglow" aria-hidden="true"></div>
+        </div>
+        <div class="flash" id="flash2" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 04 · THE SUPPORTING CAST ================= -->
+    <section class="sc sc-cast" id="cast" aria-labelledby="cast-h">
+      <div class="stage">
+        <header class="cast-head">
+          <p class="kick">Scene 04 · Shipped and live</p>
+          <h2 id="cast-h">The supporting cast</h2>
+        </header>
+        <div class="cast-info" id="castinfo">
+          <div class="ci">
+            <p class="ci-t">Four apps people use every day</p>
+            <p class="ci-d">Built through AYS Apps — for shops, new drivers, students and anyone who types.</p>
+          </div>
+          <article class="ci" id="p-marketpos">
+            <img class="ci-img" src="assets/img/cards/marketpos.jpg" alt="MarketPOS — a sales dashboard beside a printed receipt" loading="lazy">
+            <p class="ci-n">01 / 04 · SaaS · Point of sale</p>
+            <h3>MarketPOS</h3>
+            <p class="ci-d">Point-of-sale for shops and sales points: multi-warehouse inventory, sales, staff and customer debt, real-time reports, an offline mode, and Telegram notifications.</p>
+            <a class="ci-a" href="https://marketpos.uz">Open marketpos.uz ↗</a>
+          </article>
+          <article class="ci" id="p-avtolingo">
+            <img class="ci-img" src="assets/img/cards/avtolingo.jpg" alt="Avtolingo — a road with a yield sign and a stop sign, lives and gems" loading="lazy">
+            <p class="ci-n">02 / 04 · Mobile app · Free</p>
+            <h3>Avtolingo</h3>
+            <p class="ci-d">Driver’s licence exam prep that plays like a game: the real YHQ (PDD) questions, lives, gems, and weekly and monthly leaderboards.</p>
+            <a class="ci-a" href="https://avtolingo.uz">Open avtolingo.uz ↗</a>
+          </article>
+          <article class="ci" id="p-edu360">
+            <img class="ci-img" src="assets/img/cards/edu360.jpg" alt="Edu360 — stacked test cards beside a 360° ring" loading="lazy">
+            <p class="ci-n">03 / 04 · Education · Free for students</p>
+            <h3>Edu360</h3>
+            <p class="ci-d">Online testing across every school subject, with an IELTS section, a vertical feed, and teacher profiles where teachers publish their own tests.</p>
+            <a class="ci-a" href="https://edu360.uz">Open edu360.uz ↗</a>
+          </article>
+          <article class="ci" id="p-speedtest">
+            <img class="ci-img" src="assets/img/cards/speedtest.jpg" alt="Typing Me speed test — a WPM gauge reading 84 beside a half-typed sentence" loading="lazy">
+            <p class="ci-n">04 / 04 · Web · No sign-up</p>
+            <h3>Typing Me — speed test</h3>
+            <p class="ci-d">Free typing test for WPM, accuracy and consistency. Five modes, six themes, no registration, no ads — the tool the game grew out of.</p>
+            <a class="ci-a" href="https://typing-me.aysapps.uz">Open typing-me.aysapps.uz ↗</a>
+          </article>
+          <div class="ci">
+            <p class="ci-t">From the same studio</p>
+            <p class="ci-d">Android and iOS apps, web panels and SaaS platforms — from the first concept through app-store release.</p>
+            <a class="ci-a" href="https://aysapps.uz">Open aysapps.uz ↗</a>
+          </div>
+        </div>
+        <div class="chips" id="chips" role="group" aria-label="Jump to a project">
+          <button type="button" data-k="1">MarketPOS</button><button type="button" data-k="2">Avtolingo</button><button type="button" data-k="3">Edu360</button><button type="button" data-k="4">Speed test</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 05 · YOUR SCENE ================= -->
+    <section class="sc sc-script" id="contact" aria-labelledby="contact-h">
+      <div>
+        <div class="desk-head">
+          <div><p class="kick">Scene 05 · Your scene</p><h2 id="contact-h">Write the next scene</h2></div>
+          <p>Fill in your lines. The script goes straight to Rahmatillokh.</p>
+        </div>
+        <form class="page" id="script" action="mailto:webcoder292@gmail.com" method="post" enctype="text/plain">
+          <p class="pg" aria-hidden="true">5.</p>
+          <p class="tr" data-tw>Fade in:</p>
+          <p class="sl" data-tw>Int. Your studio — day</p>
+          <p data-tw>You have an idea. An app, a web panel, a SaaS platform — or a game. It needs someone to build it.</p>
+          <label class="cue-l"><span class="sr-only">Your name</span><input class="who" id="who" name="name" type="text" placeholder="Your name" autocomplete="name" maxlength="40"></label>
+          <p class="paren">(typing)</p>
+          <div class="dlg"><label><span class="sr-only">Your message</span><textarea class="lines" id="lines" name="message" rows="3" placeholder="Hi Rahmatillokh — I want to build…"></textarea></label></div>
+          <p class="cue-l" data-tw>Rahmatillokh</p>
+          <p class="paren" data-tw>(usually replies within a business day)</p>
+          <p class="dlg" data-tw>Let’s build something people use every day.</p>
+          <div class="send">
+            <button class="btn-send" type="submit">Send the script ↗</button>
+            <a class="btn-tg" id="tg" href="https://t.me/rahmatillokh_web">Open Telegram</a>
+          </div>
+          <p class="tr tr-r" data-tw>Cut to:</p>
+        </form>
+        <p class="also">Also at <a href="mailto:webcoder292@gmail.com">webcoder292@gmail.com</a> · <a href="https://t.me/rahmatillokh_web">Telegram</a> · <a href="https://www.youtube.com/@rahmatillokh">YouTube</a> · <a href="https://github.com/rahmatillokh">GitHub</a> · <a href="https://www.instagram.com/rahmatillo.dev">Instagram</a> · <a href="https://tirikchilik.uz/rahmatillokh">Support the work</a></p>
+      </div>
+      <p class="callout" id="callout" aria-hidden="true"><b>Your turn</b>Click the page and write your lines — the film waits for you.</p>
+    </section>
+
+    <!-- ================= SCENE 06 · END CREDITS ================= -->
+    <section class="sc sc-credits" id="credits" aria-labelledby="cred-h">
+      <div class="stage cred-stage">
+        <div class="roll" id="roll">
+          <p class="kick">Scene 06</p>
+          <h2 class="roll-t" id="cred-h">End credits</h2>
+          <p class="roll-sig">Rahmatillokh</p>
+          <dl class="cr">
+            <div><dt>Directed by</dt><dd>Rahmatillokh</dd></div>
+            <div><dt>Produced by</dt><dd><a href="https://aysapps.uz">AYS Apps</a></dd></div>
+            <div><dt>Written in</dt><dd>Unity · C# · Web · Android · iOS</dd></div>
+          </dl>
+          <p class="cr-h">Starring</p>
+          <ul class="starring">
+            <li><span>Typing Me</span><i></i><span>as The Flagship</span></li>
+            <li><span>MarketPOS</span><i></i><span>as The Shopkeeper’s Friend</span></li>
+            <li><span>Avtolingo</span><i></i><span>as The Driving Instructor</span></li>
+            <li><span>Edu360</span><i></i><span>as The Exam Hall</span></li>
+            <li><span>Speed Test</span><i></i><span>as The Stopwatch</span></li>
+            <li><span>The Dragon</span><i></i><span>as The Final Boss</span></li>
+          </ul>
+          <dl class="cr">
+            <div><dt>Filmed on location in</dt><dd>Namangan, Uzbekistan</dd></div>
+            <div><dt>Sound</dt><dd>Generated live in your browser</dd></div>
+            <div><dt>Built with</dt><dd>three.js · Web Audio · hand-written HTML &amp; CSS</dd></div>
+            <div><dt>Typefaces</dt><dd>Anton · Plus Jakarta Sans · JetBrains Mono · Courier Prime · Kaushan Script</dd></div>
+            <div><dt>Projected by</dt><dd>GitHub Pages · <a href="https://github.com/rahmatillokh/rahmatillokh.github.io">source</a></dd></div>
+            <div><dt>Also showing on</dt><dd><a href="https://www.youtube.com/@rahmatillokh">YouTube</a> · <a href="https://github.com/rahmatillokh">GitHub</a> · <a href="https://www.instagram.com/rahmatillo.dev">Instagram</a> · <a href="https://t.me/rahmatillokh_web">Telegram</a> · <a href="https://tirikchilik.uz/rahmatillokh">Support the work</a></dd></div>
+            <div><dt>Special thanks</dt><dd>You — for staying until the credits.</dd></div>
+          </dl>
+          <p class="disclaimer">No real dragons were harmed in the making of this website.</p>
+          <p class="fin">Fin.</p>
+          <p class="copy">© 2026 Rahmatillokh Dev</p>
+        </div>
+        <div class="post" id="post">
+          <p class="post-k">After the credits</p>
+          <div class="post-row"><div class="post-dragon" aria-hidden="true"></div><p class="bubble" id="bubble">…one more word?</p></div>
+          <div class="post-cta">
+            <a class="btn btn-red" href="https://rahmatillokh.github.io/typing-me/">▶ Play Typing Me</a>
+            <button class="btn" id="replay" type="button">↺ Watch it again</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/js/film.js" defer></script>
 </body>
 </html>
